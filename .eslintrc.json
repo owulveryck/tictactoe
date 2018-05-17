@@ -1,0 +1,22 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/recommended"
+    ],
+    "rules": {
+        "semi": ["error", "always"],
+        "no-extra-semi": "error",
+        "comma-style": ["error", "last"],
+        "comma-spacing": ["error", { "before": false, "after": true }],
+        "comma-dangle": ["error", "always-multiline"],
+        "quotes": ["error", "single"],
+        "no-console": "off",
+        "vue/max-attributes-per-line": [2, {
+            "singleline": 1,
+            "multiline": {
+                "max": 1,
+                "allowFirstLine": true
+            }
+        }]
+    }
+}
