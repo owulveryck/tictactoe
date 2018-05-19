@@ -29,8 +29,7 @@
   "eslintConfig": {
     "root": true,
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "./.eslintrc.json"
     ]
   },
   "postcss": {
