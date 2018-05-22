@@ -19,17 +19,17 @@
               stroke-linecap="round" />
           </svg>
         </div>
-        <div v-if="gameEnded" 
+        <div v-if="gameState.gameEnded" 
              class="results">
-          <div v-if="winner !== ''">
+          <div v-if="gameState.winner !== ''">
             <ttt-circle 
-              v-if="winner === 'O'" 
-              :displayed="winner === 'O'" 
+              v-if="gameState.winner === 'O'" 
+              :displayed="gameState.winner === 'O'" 
               :size="64"
               :stroke-width="7" />
             <ttt-cross 
-              v-if="winner === 'X'" 
-              :displayed="winner === 'X'" 
+              v-if="gameState.winner === 'X'" 
+              :displayed="gameState.winner === 'X'" 
               :size="64"
               :stroke-width="7" />
             Wins
@@ -42,70 +42,70 @@
         <tr id="row-1">
           <td 
             id="cell-1-1" 
-            :class="{ 'filled' : gameState[0][0] !== '', 'animated' : cellsToAnimate[0][0] === '✨' }"
-            @click="play(0, 0)">
-            <ttt-circle :displayed="gameState[0][0] === 'O'" />
-            <ttt-cross :displayed="gameState[0][0] === 'X'" />
+            :class="{ 'filled' : gameState.game[0][0] !== '', 'animated' : cellsToAnimate[0][0] === '✨' }"
+            @click="humanPlay(0, 0)">
+            <ttt-circle :displayed="gameState.game[0][0] === 'O'" />
+            <ttt-cross :displayed="gameState.game[0][0] === 'X'" />
           </td>
           <td 
             id="cell-1-2" 
-            :class="{ 'filled' : gameState[0][1] !== '', 'animated' : cellsToAnimate[0][1] === '✨' }"
-            @click="play(0, 1)">
-            <ttt-circle :displayed="gameState[0][1] === 'O'" />
-            <ttt-cross :displayed="gameState[0][1] === 'X'" />
+            :class="{ 'filled' : gameState.game[0][1] !== '', 'animated' : cellsToAnimate[0][1] === '✨' }"
+            @click="humanPlay(0, 1)">
+            <ttt-circle :displayed="gameState.game[0][1] === 'O'" />
+            <ttt-cross :displayed="gameState.game[0][1] === 'X'" />
           </td>
           <td 
             id="cell-1-3" 
-            :class="{ 'filled' : gameState[0][2] !== '', 'animated' : cellsToAnimate[0][2] === '✨' }"
-            @click="play(0, 2)">
-            <ttt-circle :displayed="gameState[0][2] === 'O'" />
-            <ttt-cross :displayed="gameState[0][2] === 'X'" />
+            :class="{ 'filled' : gameState.game[0][2] !== '', 'animated' : cellsToAnimate[0][2] === '✨' }"
+            @click="humanPlay(0, 2)">
+            <ttt-circle :displayed="gameState.game[0][2] === 'O'" />
+            <ttt-cross :displayed="gameState.game[0][2] === 'X'" />
           </td>
         </tr>
         <tr id="row-2">
           <td 
             id="cell-2-1" 
-            :class="{ 'filled' : gameState[1][0] !== '', 'animated' : cellsToAnimate[1][0] === '✨' }"
-            @click="play(1, 0)">
-            <ttt-circle :displayed="gameState[1][0] === 'O'" />
-            <ttt-cross :displayed="gameState[1][0] === 'X'" />
+            :class="{ 'filled' : gameState.game[1][0] !== '', 'animated' : cellsToAnimate[1][0] === '✨' }"
+            @click="humanPlay(1, 0)">
+            <ttt-circle :displayed="gameState.game[1][0] === 'O'" />
+            <ttt-cross :displayed="gameState.game[1][0] === 'X'" />
           </td>
           <td 
             id="cell-2-2" 
-            :class="{ 'filled' : gameState[1][1] !== '', 'animated' : cellsToAnimate[1][1] === '✨' }"
-            @click="play(1, 1)">
-            <ttt-circle :displayed="gameState[1][1] === 'O'" />
-            <ttt-cross :displayed="gameState[1][1] === 'X'" />
+            :class="{ 'filled' : gameState.game[1][1] !== '', 'animated' : cellsToAnimate[1][1] === '✨' }"
+            @click="humanPlay(1, 1)">
+            <ttt-circle :displayed="gameState.game[1][1] === 'O'" />
+            <ttt-cross :displayed="gameState.game[1][1] === 'X'" />
           </td>
           <td 
             id="cell-2-3" 
-            :class="{ 'filled' : gameState[1][2] !== '', 'animated' : cellsToAnimate[1][2] === '✨' }"
-            @click="play(1, 2)">
-            <ttt-circle :displayed="gameState[1][2] === 'O'" />
-            <ttt-cross :displayed="gameState[1][2] === 'X'" />
+            :class="{ 'filled' : gameState.game[1][2] !== '', 'animated' : cellsToAnimate[1][2] === '✨' }"
+            @click="humanPlay(1, 2)">
+            <ttt-circle :displayed="gameState.game[1][2] === 'O'" />
+            <ttt-cross :displayed="gameState.game[1][2] === 'X'" />
           </td>
         </tr>
         <tr id="row-3">
           <td 
             id="cell-3-1" 
-            :class="{ 'filled' : gameState[2][0] !== '', 'animated' : cellsToAnimate[2][0] === '✨' }"
-            @click="play(2, 0)">
-            <ttt-circle :displayed="gameState[2][0] === 'O'" />
-            <ttt-cross :displayed="gameState[2][0] === 'X'" />
+            :class="{ 'filled' : gameState.game[2][0] !== '', 'animated' : cellsToAnimate[2][0] === '✨' }"
+            @click="humanPlay(2, 0)">
+            <ttt-circle :displayed="gameState.game[2][0] === 'O'" />
+            <ttt-cross :displayed="gameState.game[2][0] === 'X'" />
           </td>
           <td 
             id="cell-3-2" 
-            :class="{ 'filled' : gameState[2][1] !== '', 'animated' : cellsToAnimate[2][1] === '✨' }"
-            @click="play(2, 1)">
-            <ttt-circle :displayed="gameState[2][1] === 'O'" />
-            <ttt-cross :displayed="gameState[2][1] === 'X'" />
+            :class="{ 'filled' : gameState.game[2][1] !== '', 'animated' : cellsToAnimate[2][1] === '✨' }"
+            @click="humanPlay(2, 1)">
+            <ttt-circle :displayed="gameState.game[2][1] === 'O'" />
+            <ttt-cross :displayed="gameState.game[2][1] === 'X'" />
           </td>
           <td 
             id="cell-3-3" 
-            :class="{ 'filled' : gameState[2][2] !== '', 'animated' : cellsToAnimate[2][2] === '✨' }"
-            @click="play(2, 2)">
-            <ttt-circle :displayed="gameState[2][2] === 'O'" />
-            <ttt-cross :displayed="gameState[2][2] === 'X'" />
+            :class="{ 'filled' : gameState.game[2][2] !== '', 'animated' : cellsToAnimate[2][2] === '✨' }"
+            @click="humanPlay(2, 2)">
+            <ttt-circle :displayed="gameState.game[2][2] === 'O'" />
+            <ttt-cross :displayed="gameState.game[2][2] === 'X'" />
           </td>
         </tr>
       </table>
@@ -114,10 +114,10 @@
 </template>
 
 <script>
-import _ from 'lodash';
 import Vue from 'vue';
 import TttCircle from './TttCircle';
 import TttCross from './TttCross';
+import { play } from './../lib/tictactoe';
 import { add } from './../lib/add';
 
 export default {
@@ -130,119 +130,22 @@ export default {
 
   data: () => ({
     displayed: false,
-    gameState: [['', '', ''], ['', '', ''], ['', '', '']],
+    gameState: {
+      game: [['', '', ''], ['', '', ''], ['', '', '']],
+      currentPlayer: 'X',
+      winner: '',
+      gameEnded: false,
+    },
     cellsToAnimate: [['', '', ''], ['', '', ''], ['', '', '']],
-    currentPlayer: 'X',
-    winner: '',
-    gameEnded: false,
     isBoardShaking: false,
   }),
 
   methods: {
-    play(row, col) {
-      Vue.set(this.gameState[row], col, this.currentPlayer);
-      this.currentPlayer = this.currentPlayer === 'X' ? this.currentPlayer = 'O' : this.currentPlayer = 'X';
-      this.checkEndOfGame();
+    humanPlay(row, col) {
+      Vue.set(this.gameState.game[row], col, this.gameState.currentPlayer);
+      this.gameState.currentPlayer = this.gameState.currentPlayer === 'X' ? this.gameState.currentPlayer = 'O' : this.gameState.currentPlayer = 'X';
+      play(this.gameState, this.animateCells, this.shakeBoard);
       console.log(add(44, 4400));
-    },
-    checkEndOfGame() {
-      this.checkWon();
-      this.checkNull();
-    },
-    checkWon() {
-      const rowResult = this.checkRows();
-      const colResult = this.checkColumns();
-      const diagResult = this.checkDiagonals();
-      const isNullResult = this.checkNull();
-      let won = false;
-      let cellsToAnimate = [];
-
-      if (rowResult.winner !== '💀') {
-        won = true;
-        this.winner = rowResult.winner;
-        cellsToAnimate = [[rowResult.position, 0], [rowResult.position, 1], [rowResult.position, 2]];
-      } else if (colResult.winner !== '💀') {
-        won = true;
-        this.winner = colResult.winner;
-        cellsToAnimate = [[0, colResult.position], [1, colResult.position], [2, colResult.position]];
-      } else if (diagResult.winner !== '💀') {
-        won = true;
-        this.winner = diagResult.winner;
-        cellsToAnimate = [[0, 2 * diagResult.position], [1, 1], [2, 2 - 2 * diagResult.position]];
-      }
-
-      if (won) {
-        this.gameEnded = true;
-        this.animateCells(cellsToAnimate);
-      }
-      
-      if (isNullResult && !won) {
-          this.gameEnded = true;
-          this.shakeBoard();
-      }
-    },
-    checkRows() { 
-      return this.checkLines(this.gameState);
-    },
-    checkColumns() {
-      const reversedRowColGameState = [[], [], []];
-
-      for (let rowIndex = 0; rowIndex < this.gameState.length; rowIndex++) {
-        for (let colIndex = 0; colIndex < this.gameState.length; colIndex++) {
-          reversedRowColGameState[colIndex][rowIndex] = this.gameState[rowIndex][colIndex];
-        }
-      }
-
-      return this.checkLines(reversedRowColGameState);
-    },
-    checkDiagonals() {
-      const extractedLines = [[
-        this.gameState[0][0],
-        this.gameState[1][1],
-        this.gameState[2][2],
-      ], [
-        this.gameState[0][2],
-        this.gameState[1][1],
-        this.gameState[2][0],
-      ]];
-
-      return this.checkLines(extractedLines);
-    },
-    checkLines(lines) {
-      for (let i = 0; i < lines.length; i++) {
-        const reducedRow = this.checkLine(lines[i]);
-
-        if (reducedRow !== '💀') {
-          return {
-            winner: reducedRow,
-            position: i,
-          };
-        }
-      }
-
-      return {
-        winner: '💀',
-        position: -1,
-      };
-    },
-    checkLine(line) {
-      return line.reduce((accumulator, currentValue) => {
-        if (accumulator === '🏁' && currentValue !== '') {
-          accumulator = currentValue;
-          return accumulator;
-        } else if (currentValue !== accumulator) {
-          return '💀';
-        }
-        
-        return accumulator;
-      }, '🏁');
-    },
-    checkNull() {
-      const flattened = _.flatten(this.gameState);
-      if (!flattened.includes('')) {
-        return true;
-      }
-      return false;
     },
     animateCells(cells) {
       this.cellsToAnimate = [['', '', ''], ['', '', ''], ['', '', '']];
@@ -261,11 +164,11 @@ export default {
       }, 1000);
     },
     reset() {
-      this.gameState = [['', '', ''], ['', '', ''], ['', '', '']],
-      this.cellsToAnimate = [['', '', ''], ['', '', ''], ['', '', '']];
-      this.currentPlayer = 'X';
-      this.winner = '';
-      this.gameEnded = false;
+      this.gameState.game = [['', '', ''], ['', '', ''], ['', '', '']],
+      this.gameState.currentPlayer = 'X';
+      this.gameState.winner = '';
+      this.gameState.gameEnded = false;
+      this.cellsToAnimatÒe = [['', '', ''], ['', '', ''], ['', '', '']];
       this.isBoardShaking = false;
     },
   },
