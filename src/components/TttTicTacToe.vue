@@ -114,10 +114,11 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import _ from 'lodash';
+import Vue from 'vue';
 import TttCircle from './TttCircle';
 import TttCross from './TttCross';
+import { add } from './../lib/add';
 
 export default {
   name: 'TttTicTacToe',
@@ -142,6 +143,7 @@ export default {
       Vue.set(this.gameState[row], col, this.currentPlayer);
       this.currentPlayer = this.currentPlayer === 'X' ? this.currentPlayer = 'O' : this.currentPlayer = 'X';
       this.checkEndOfGame();
+      console.log(add(44, 4400));
     },
     checkEndOfGame() {
       this.checkWon();
