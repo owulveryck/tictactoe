@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <ttt-tic-tac-toe/>
+    <ttt-tic-tac-toe />
   </div>
 </template>
 

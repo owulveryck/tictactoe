@@ -1,12 +1,36 @@
 import _ from 'lodash';
 
-const play = (gameState, animateCells, shakeBoard) => {
-  checkEndOfGame(gameState, animateCells, shakeBoard);
+const play = (gameState, strategies) => {
+  if (strategies[gameState.currentPlayer] === 'human') {
+    console.log('Wait for human to play');
+    return null;
+  } else {
+    console.log('Machine is playing...');
+    return playAutomatically(gameState.game, strategies[gameState.currentPlayer]);
+  }
 };
 
-const checkEndOfGame = (gameState, animateCells, shakeBoard) => {
+const playAutomatically = (game, strategy) => {
+  console.log(`Play applying ${strategy} strategy`);
+
+  // Find first empty cell
+  for (let rowIndex = 0; rowIndex < game.length; rowIndex++) {
+    for (let colIndex = 0; colIndex < game.length; colIndex++) {
+      if (game[rowIndex][colIndex] === '') {
+        return {
+          rowIndex,
+          colIndex,
+        };
+      }
+    } 
+  }
+};
+
+const checkEndOfGame = (gameState, strategies, animateCells, shakeBoard) => {
     checkWon(gameState, animateCells, shakeBoard);
     checkNull(gameState);
+
+    return gameState.gameEnded;
 };
 
 const checkWon = (gameState, animateCells, shakeBoard) => {
@@ -116,4 +140,7 @@ const checkNull = (gameState) => {
     return false;
 };
 
-export { play };
+export {
+  play,
+  checkEndOfGame,
+};

@@ -47,9 +47,11 @@ export default {
     viewBox() {
       return `0 0 ${this.size} ${this.size}`;
     },
+
     pathPolygon() {
       return `M${this.strokeWidth + 1} ${this.strokeWidth + 1} ${this.size - (this.strokeWidth + 1)} ${this.size - (this.strokeWidth + 1)} M${this.size - (this.strokeWidth + 1)} ${this.strokeWidth + 1} ${this.strokeWidth + 1} ${this.size - (this.strokeWidth + 1)}`;
     },
+
     pathLength() {
       return Math.ceil(Math.sqrt(2) * this.size);
     },
@@ -58,6 +60,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import './../assets/styles/ttt-styles.scss';
+
 .container {
   display: flex;
   justify-content: center;

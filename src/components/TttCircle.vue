@@ -49,6 +49,7 @@ export default {
     viewBox() {
       return `0 0 ${this.size + 2 * this.strokeWidth} ${this.size + 2 * this.strokeWidth}`;
     },
+
     pathLength() {
       return 2 * Math.PI * this.size;
     },
@@ -57,6 +58,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import './../assets/styles/ttt-styles.scss';
+
 .container {
   display: flex;
   justify-content: center;
