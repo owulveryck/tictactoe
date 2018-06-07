@@ -8,8 +8,10 @@
       <span>is</span>
       <select v-model="strategy.X">
         <option value="human">Human</option>
-        <option value="machine-1">Machine - 1</option>
-        <option value="machine-2">Machine - 2</option>
+        <option value="random">Machine - Random</option>
+        <option value="easy">Machine - Easy</option>
+        <option value="smart">Machine - Smart</option>
+        <option value="neural">Machine - Neural</option>
       </select>
     </div>
     <div class="field">
@@ -17,8 +19,10 @@
       <span>is</span>
       <select v-model="strategy.O">
         <option value="human">Human</option>
-        <option value="machine-1">Machine - 1</option>
-        <option value="machine-2">Machine - 2</option>
+        <option value="random">Machine - Random</option>
+        <option value="easy">Machine - Easy</option>
+        <option value="smart">Machine - Smart</option>
+        <option value="neural">Machine - Neural</option>
       </select>
     </div>
     <button @click="go">Go!</button>

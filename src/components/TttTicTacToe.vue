@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <ttt-tic-tac-toe-splash
-      v-if="!playing"
+      v-show="!playing"
       @go-play="strategiesSelected" />
     <ttt-tic-tac-toe-game 
       v-if="playing"
@@ -49,8 +49,5 @@ export default {
 .container {
   background-color: $primary-color;
   height: 100vh;
-  transform: scale(3);
-  transform-origin: top;
-  width: 100vh;
 }
 </style>

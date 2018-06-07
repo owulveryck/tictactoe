@@ -37,7 +37,7 @@
           <div v-else>
             Nobody wins...
           </div>
-          <button @click="reset">Play again!</button>
+          <button @click="finish">Play again!</button>
         </div>
         <tr id="row-1">
           <td 
@@ -117,7 +117,7 @@
 import Vue from 'vue';
 import TttCircle from './TttCircle';
 import TttCross from './TttCross';
-import { play, checkEndOfGame } from './../lib/tictactoe';
+import { play, checkEndOfGame, computeOctalBoard } from './../lib/tictactoe';
 
 export default {
   name: 'TttTicTacToeGame',
@@ -143,6 +143,15 @@ export default {
       gameEnded: false,
       status: '',
       isHumanPlaying: false,
+      ttt: {
+        board: 0,
+        history: [],
+        turn: 0,
+        ai: {
+          X: null,
+          O: null,
+        },
+      },
     },
     cellsToAnimate: [['', '', ''], ['', '', ''], ['', '', '']],
     isBoardShaking: false,
@@ -178,6 +187,7 @@ export default {
     },
 
     applyPlay(row, col) {
+      this.updateTtt(row, col);
       Vue.set(this.gameState.game[row], col, this.gameState.currentPlayer);
       this.gameState.currentPlayer = this.gameState.currentPlayer === 'X' ? this.gameState.currentPlayer = 'O' : this.gameState.currentPlayer = 'X';
       checkEndOfGame(
@@ -189,6 +199,14 @@ export default {
       if (!this.gameState.gameEnded) {
         this.play();
       }
+    },
+
+    updateTtt(row, col) {
+      const square = 3 * row + col;
+      const piece = this.gameState.currentPlayer === 'X' ? 1 : 3;
+
+      this.gameState.ttt.history.push(this.gameState.ttt.board);
+      this.gameState.ttt.board = computeOctalBoard(this.gameState.ttt.board, square, piece);
     },
 
     animateCells(cells) {
@@ -209,13 +227,7 @@ export default {
       }, 1000);
     },
 
-    reset() {
-      this.gameState.game = [['', '', ''], ['', '', ''], ['', '', '']],
-      this.gameState.currentPlayer = 'X';
-      this.gameState.winner = '';
-      this.gameState.gameEnded = false;
-      this.cellsToAnimate = [['', '', ''], ['', '', ''], ['', '', '']];
-      this.isBoardShaking = false;
+    finish() {
       this.$emit('game-finished');
     },
   },
@@ -289,11 +301,11 @@ export default {
         @keyframes exploding-circle {
           0% {
             opacity: 1;
-            stroke-width: 130;
+            stroke-width: 130px;
           }
           99% {
             opacity: 1;
-            stroke-width: 1;
+            stroke-width: 1px;
           }
           100% {
             opacity: 0;
