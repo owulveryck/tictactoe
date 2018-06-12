@@ -96,7 +96,7 @@ export default {
   margin-bottom: $padding;
 
   span {
-    margin: 0 #{$padding / 2}
+    margin: #{$padding / 4} #{$padding / 2}
   }
 }
 </style>

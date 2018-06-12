@@ -1,6 +1,7 @@
 @font-face {
   font-family: glass-tty;
-  src: url(/Glass_TTY_VT220.ttf);
+  src: url(/Glass_TTY_VT220.woff2) format("woff2"),
+       url(/Glass_TTY_VT220.ttf) format("ttf");
 }
 
 $primary-color: #131E38 !default;
@@ -12,6 +13,7 @@ $appear-duration: 400ms !default;
 * {
   box-sizing: border-box;
   font-family: 'glass-tty', sans-serif;
+  font-size: 1em;
 }
 
 .label {
