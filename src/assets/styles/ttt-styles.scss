@@ -1,14 +1,17 @@
-@import url('https://fonts.googleapis.com/css?family=Lato');
+@font-face {
+  font-family: glass-tty;
+  src: url(/Glass_TTY_VT220.ttf);
+}
 
-$primary-color: #29282E !default;
-$text-color: white !default;
+$primary-color: #131E38 !default;
+$text-color: #b3e2ef !default;
 $padding: 16px !default;
 $cell-size: 44px !default;
 $appear-duration: 400ms !default;
 
 * {
   box-sizing: border-box;
-  font-family: 'Lato', sans-serif;
+  font-family: 'glass-tty', sans-serif;
 }
 
 .label {
