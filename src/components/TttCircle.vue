@@ -71,13 +71,13 @@ export default {
       display: none;
 
       &.path {
-        display: inline;
         animation: dash 200ms linear forwards;
+        display: inline;
       }
 
       &.unpath {
-        display: inline;
         animation: undash 200ms linear forwards;
+        display: inline;
       }
 
       @keyframes dash {

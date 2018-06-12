@@ -3,7 +3,7 @@ import Ai from './netttt/ai';
 import Neural from './netttt/neural';
 import NEURAL_NETWORK from './netttt/neural-network.json';
 
-const play = (gameState, strategies) => {
+const playTtt = async (gameState, strategies) => {
   if (strategies[gameState.currentPlayer] === 'human') {
     console.log('Wait for human to play');
     return null;
@@ -13,8 +13,8 @@ const play = (gameState, strategies) => {
   }
 };
 
-const playAutomatically = (gameState, strategy) => {
-  console.log(`Play applying ${strategy} strategy`);
+const playAutomatically = async (gameState, strategy) => {
+  console.log(`Play applying ${strategy} strategy, board: ${gameState.ttt.board}`);
 
   if (!gameState.ttt.ai[gameState.currentPlayer]) {
     switch(strategy) {
@@ -33,16 +33,53 @@ const playAutomatically = (gameState, strategy) => {
         gameState.ttt.ai[gameState.currentPlayer] = new Ai.Neural(net);
         gameState.ttt.emptySquares = () => emptySquares(gameState.ttt.board);
         break;
+      case 'neural-go':
+        // eslint-disable-next-line no-undef
+        play(10);
+        console.log('GO engine inited');
+        break;
     }
   }
 
+  if (['random', 'easy', 'smart', 'neural'].includes(strategy)) {
+    return playJsEngine(gameState);
+  } else if (strategy === 'neural-go') {
+    console.log(`row index : ${gameState.lastMove.rowIndex}`);
+    if (!gameState.ttt.ai[gameState.currentPlayer]) {
+      console.log('Return default values for first move');
+      gameState.ttt.ai[gameState.currentPlayer] = '👍';
+      return {
+        rowIndex: 1,
+        colIndex: 1,
+      };
+    } else {
+      return await playGoEngine(gameState);
+    }
+  }
+};
+
+const playJsEngine = (gameState) => {
   const aiMove = gameState.ttt.ai[gameState.currentPlayer].getMove(gameState.ttt);
-  const rowIndex = Math.floor(aiMove / 3);
-  const colIndex = aiMove % 3;
+  return {
+    rowIndex: Math.floor(aiMove / 3),
+    colIndex: aiMove % 3,
+  };
+};
+
+const playGoEngine = async (gameState) => {
+  console.log(`Last move: ${gameState.lastMove.rowIndex + gameState.lastMove.colIndex}`);
+  // eslint-disable-next-line no-undef
+  await play( ( 3*gameState.lastMove.rowIndex ) + gameState.lastMove.colIndex);
+  await sleep(100);
+
+  // eslint-disable-next-line no-undef
+  console.log(`output: ${output}`);
 
   return {
-    rowIndex,
-    colIndex,
+    // eslint-disable-next-line no-undef
+    rowIndex: Math.floor(output / 3),
+    // eslint-disable-next-line no-undef
+    colIndex: output % 3,
   };
 };
 
@@ -173,8 +210,12 @@ const emptySquares = (board) => {
   return empty;
 };
 
+const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 export {
-  play,
+  playTtt,
   checkEndOfGame,
   computeOctalBoard,
 };

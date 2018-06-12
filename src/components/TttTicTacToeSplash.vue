@@ -12,6 +12,7 @@
         <option value="easy">Machine - Easy</option>
         <option value="smart">Machine - Smart</option>
         <option value="neural">Machine - Neural</option>
+        <option value="neural-go">Machine - Neural Go</option>
       </select>
     </div>
     <div class="field">
@@ -63,12 +64,24 @@ export default {
 @import './../assets/styles/ttt-styles.scss';
 
 .splash {
+  animation: appear 100ms linear forwards;
   align-items: stretch;
   display: flex;
   flex-direction: column;
   margin: 0 auto $padding;
   padding-top: #{$padding / 2};
   width: 200px;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    // transform: scale(0.1);
+  }
+  100% {
+    opacity: 1;
+    // transform: scale(1);
+  }
 }
 
 .title {

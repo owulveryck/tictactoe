@@ -117,7 +117,7 @@
 import Vue from 'vue';
 import TttCircle from './TttCircle';
 import TttCross from './TttCross';
-import { play, checkEndOfGame, computeOctalBoard } from './../lib/tictactoe';
+import { playTtt, checkEndOfGame, computeOctalBoard } from './../lib/tictactoe';
 
 export default {
   name: 'TttTicTacToeGame',
@@ -143,6 +143,7 @@ export default {
       gameEnded: false,
       status: '',
       isHumanPlaying: false,
+      lastMove: {},
       ttt: {
         board: 0,
         history: [],
@@ -162,13 +163,16 @@ export default {
   },
 
   methods: {
-    play() {
-      const toPlay = play(
+    async play() {
+      const toPlay = await playTtt(
         this.gameState,
         this.strategies,
         this.animateCells,
         this.shakeBoard
       );
+
+      console.log('To play');
+      console.log(toPlay);
 
       if (toPlay !== null) {
         const { rowIndex, colIndex } = toPlay;
@@ -188,6 +192,7 @@ export default {
 
     applyPlay(row, col) {
       this.updateTtt(row, col);
+      this.gameState.lastMove = { rowIndex: row, colIndex: col };
       Vue.set(this.gameState.game[row], col, this.gameState.currentPlayer);
       this.gameState.currentPlayer = this.gameState.currentPlayer === 'X' ? this.gameState.currentPlayer = 'O' : this.gameState.currentPlayer = 'X';
       checkEndOfGame(

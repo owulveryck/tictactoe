@@ -18,5 +18,8 @@
                 "allowFirstLine": true
             }
         }]
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017
     }
 }
