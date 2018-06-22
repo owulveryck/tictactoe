@@ -1,13 +1,11 @@
-/* eslint-disable */
 // Copyright 2018 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-process.hrtime = require('browser-process-hrtime');
 
-const wasmExec = () => {
+(() => {
 	// Map web browser API and Node.js API to a single common API (preferring web standards over Node.js API).
 	const isNodeJS = typeof process !== "undefined";
-	/*if (isNodeJS) {
+	if (isNodeJS) {
 		global.require = require;
 		global.fs = require("fs");
 
@@ -18,19 +16,17 @@ const wasmExec = () => {
 			},
 		};
 
-		const now = () => {
-			const [sec, nsec] = process.hrtime();
-			return sec * 1000 + nsec / 1000000;
-		};
 		global.performance = {
-			timeOrigin: Date.now() - now(),
-			now: now,
+			now() {
+				const [sec, nsec] = process.hrtime();
+				return sec * 1000 + nsec / 1000000;
+			},
 		};
 
 		const util = require("util");
 		global.TextEncoder = util.TextEncoder;
 		global.TextDecoder = util.TextDecoder;
-	} else {*/
+	} else {
 		window.global = window;
 
 		let outputBuf = "";
@@ -45,15 +41,20 @@ const wasmExec = () => {
 				}
 				return buf.length;
 			},
+			openSync(path, flags, mode) {
+				const err = new Error("not implemented");
+				err.code = "ENOSYS";
+				throw err;
+			},
 		};
-	// }
+	}
 
 	const encoder = new TextEncoder("utf-8");
 	const decoder = new TextDecoder("utf-8");
 
 	global.Go = class {
 		constructor() {
-			this.argv = [];
+			this.argv = ["js"];
 			this.env = {};
 			this.exit = (code) => {
 				if (code !== 0) {
@@ -120,6 +121,7 @@ const wasmExec = () => {
 				return decoder.decode(new DataView(this._inst.exports.mem.buffer, saddr, len));
 			}
 
+			const timeOrigin = Date.now() - performance.now();
 			this.importObject = {
 				go: {
 					// func wasmExit(code int32)
@@ -133,12 +135,12 @@ const wasmExec = () => {
 						const fd = getInt64(sp + 8);
 						const p = getInt64(sp + 16);
 						const n = mem().getInt32(sp + 24, true);
-            global.fs.writeSync(fd, new Uint8Array(this._inst.exports.mem.buffer, p, n));
+						fs.writeSync(fd, new Uint8Array(this._inst.exports.mem.buffer, p, n));
 					},
 
 					// func nanotime() int64
 					"runtime.nanotime": (sp) => {
-						setInt64(sp + 8, (performance.timeOrigin + performance.now()) * 1000000);
+						setInt64(sp + 8, (timeOrigin + performance.now()) * 1000000);
 					},
 
 					// func walltime() (sec int64, nsec int32)
@@ -171,48 +173,48 @@ const wasmExec = () => {
 						crypto.getRandomValues(loadSlice(sp + 8));
 					},
 
-					// func boolVal(value bool) Value
+					// func boolVal(value bool) ref
 					"syscall/js.boolVal": (sp) => {
 						storeValue(sp + 16, mem().getUint8(sp + 8) !== 0);
 					},
 
-					// func intVal(value int) Value
+					// func intVal(value int) ref
 					"syscall/js.intVal": (sp) => {
 						storeValue(sp + 16, getInt64(sp + 8));
 					},
 
-					// func floatVal(value float64) Value
+					// func floatVal(value float64) ref
 					"syscall/js.floatVal": (sp) => {
 						storeValue(sp + 16, mem().getFloat64(sp + 8, true));
 					},
 
-					// func stringVal(value string) Value
+					// func stringVal(value string) ref
 					"syscall/js.stringVal": (sp) => {
 						storeValue(sp + 24, loadString(sp + 8));
 					},
 
-					// func (v Value) Get(key string) Value
-					"syscall/js.Value.Get": (sp) => {
+					// func valueGet(v ref, p string) ref
+					"syscall/js.valueGet": (sp) => {
 						storeValue(sp + 32, Reflect.get(loadValue(sp + 8), loadString(sp + 16)));
 					},
 
-					// func (v Value) set(key string, value Value)
-					"syscall/js.Value.set": (sp) => {
+					// func valueSet(v ref, p string, x ref)
+					"syscall/js.valueSet": (sp) => {
 						Reflect.set(loadValue(sp + 8), loadString(sp + 16), loadValue(sp + 32));
 					},
 
-					// func (v Value) Index(i int) Value
-					"syscall/js.Value.Index": (sp) => {
+					// func valueIndex(v ref, i int) ref
+					"syscall/js.valueIndex": (sp) => {
 						storeValue(sp + 24, Reflect.get(loadValue(sp + 8), getInt64(sp + 16)));
 					},
 
-					// func (v Value) setIndex(i int, value Value)
-					"syscall/js.Value.setIndex": (sp) => {
+					// valueSetIndex(v ref, i int, x ref)
+					"syscall/js.valueSetIndex": (sp) => {
 						Reflect.set(loadValue(sp + 8), getInt64(sp + 16), loadValue(sp + 24));
 					},
 
-					// func (v Value) call(name string, args []Value) (Value, bool)
-					"syscall/js.Value.call": (sp) => {
+					// func valueCall(v ref, m string, args []ref) (ref, bool)
+					"syscall/js.valueCall": (sp) => {
 						try {
 							const v = loadValue(sp + 8);
 							const m = Reflect.get(v, loadString(sp + 16));
@@ -225,8 +227,8 @@ const wasmExec = () => {
 						}
 					},
 
-					// func (v Value) invoke(args []Value) (Value, bool)
-					"syscall/js.Value.invoke": (sp) => {
+					// func valueInvoke(v ref, args []ref) (ref, bool)
+					"syscall/js.valueInvoke": (sp) => {
 						try {
 							const v = loadValue(sp + 8);
 							const args = loadSliceOfValues(sp + 16);
@@ -238,8 +240,8 @@ const wasmExec = () => {
 						}
 					},
 
-					// func (v Value) new(args []Value) (Value, bool)
-					"syscall/js.Value.new": (sp) => {
+					// func valueNew(v ref, args []ref) (ref, bool)
+					"syscall/js.valueNew": (sp) => {
 						try {
 							const v = loadValue(sp + 8);
 							const args = loadSliceOfValues(sp + 16);
@@ -251,35 +253,35 @@ const wasmExec = () => {
 						}
 					},
 
-					// func (v Value) Float() float64
-					"syscall/js.Value.Float": (sp) => {
+					// func valueFloat(v ref) float64
+					"syscall/js.valueFloat": (sp) => {
 						mem().setFloat64(sp + 16, parseFloat(loadValue(sp + 8)), true);
 					},
 
-					// func (v Value) Int() int
-					"syscall/js.Value.Int": (sp) => {
+					// func valueInt(v ref) int
+					"syscall/js.valueInt": (sp) => {
 						setInt64(sp + 16, parseInt(loadValue(sp + 8)));
 					},
 
-					// func (v Value) Bool() bool
-					"syscall/js.Value.Bool": (sp) => {
+					// func valueBool(v ref) bool
+					"syscall/js.valueBool": (sp) => {
 						mem().setUint8(sp + 16, !!loadValue(sp + 8));
 					},
 
-					// func (v Value) Length() int
-					"syscall/js.Value.Length": (sp) => {
+					// func valueLength(v ref) int
+					"syscall/js.valueLength": (sp) => {
 						setInt64(sp + 16, parseInt(loadValue(sp + 8).length));
 					},
 
-					// func (v Value) prepareString() (Value, int)
-					"syscall/js.Value.prepareString": (sp) => {
+					// valuePrepareString(v ref) (ref, int)
+					"syscall/js.valuePrepareString": (sp) => {
 						const str = encoder.encode(String(loadValue(sp + 8)));
 						storeValue(sp + 16, str);
 						setInt64(sp + 24, str.length);
 					},
 
-					// func (v Value) loadString(b []byte)
-					"syscall/js.Value.loadString": (sp) => {
+					// valueLoadString(v ref, b []byte)
+					"syscall/js.valueLoadString": (sp) => {
 						const str = loadValue(sp + 8);
 						loadSlice(sp + 16).set(str);
 					},
@@ -298,7 +300,7 @@ const wasmExec = () => {
 				null,
 				global,
 				this._inst.exports.mem,
-				() => {
+				() => { // resolveCallbackPromise
 					if (this.exited) {
 						throw new Error("bad callback: Go program has already exited");
 					}
@@ -352,17 +354,17 @@ const wasmExec = () => {
 		}
 	}
 
-	/*if (isNodeJS) {
+	if (isNodeJS) {
 		if (process.argv.length < 3) {
-			console.error("usage: go_js_wasm_exec [wasm binary] [arguments]\n");
+			process.stderr.write("usage: go_js_wasm_exec [wasm binary] [arguments]\n");
 			process.exit(1);
 		}
 
-		const go = new global.Go();
+		const go = new Go();
 		go.argv = process.argv.slice(2);
 		go.env = process.env;
 		go.exit = process.exit;
-		WebAssembly.instantiate(global.fs.readFileSync(process.argv[2]), go.importObject).then((result) => {
+		WebAssembly.instantiate(fs.readFileSync(process.argv[2]), go.importObject).then((result) => {
 			process.on("exit", () => { // Node.js exits if no callback is pending
 				if (!go.exited) {
 					console.error("error: all goroutines asleep and no JavaScript callback pending - deadlock!");
@@ -372,9 +374,8 @@ const wasmExec = () => {
 			return go.run(result.instance);
 		}).catch((err) => {
 			console.error(err);
+			go.exited = true;
 			process.exit(1);
 		});
-	}*/
-};
-
-export { wasmExec };
+	}
+})();
