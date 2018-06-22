@@ -14,7 +14,7 @@ const initNeuralGo = async () => {
     // eslint-disable-next-line no-undef
     const go = new Go();
     let mod, inst;
-    WebAssembly.instantiateStreaming(fetch('test.wasm'), go.importObject).then(async (result) => {
+    WebAssembly.instantiateStreaming(fetch('nnre.wasm'), go.importObject).then(async (result) => {
       mod = result.module;
       inst = result.instance;
       await initGoEngine();
